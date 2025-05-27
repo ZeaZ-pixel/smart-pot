@@ -1,3 +1,3 @@
 import { UserModel } from './user.model';
-
-export default [UserModel];
+import { PotModel } from './pot.model';
+export default [UserModel, PotModel];

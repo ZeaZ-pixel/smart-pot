@@ -1,4 +1,4 @@
-export class Pot {
+export class PotEntity {
   constructor(
     public readonly id: number | null,
     public name: string,
