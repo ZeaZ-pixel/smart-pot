@@ -35,7 +35,7 @@ export class PotModel {
   @Column({ type: 'float', nullable: true })
   PHValue: number;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   timestamp: Date;
 
   @CreateDateColumn()
