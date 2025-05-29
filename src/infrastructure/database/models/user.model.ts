@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { EmailConfirmationModel } from './email-confirmations.model';
 
 @Entity('users')
 export class UserModel {
@@ -20,12 +22,18 @@ export class UserModel {
   @Column()
   password: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'is_verified', default: false })
+  isVerified: boolean;
+
+  @Column({ name: 'refresh_token', nullable: true })
   refreshToken: string;
 
-  @CreateDateColumn()
+  @OneToMany(() => EmailConfirmationModel, (confirmation) => confirmation.user)
+  emailConfirmations: EmailConfirmationModel[];
+
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

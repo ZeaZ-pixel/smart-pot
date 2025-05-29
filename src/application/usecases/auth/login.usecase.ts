@@ -18,11 +18,14 @@ export class LoginUseCase {
     let user: UserEntity | null = null;
     if (isValidEmail(usernameOrEmail)) {
       user = await this.userRepo.findByEmail(usernameOrEmail);
-      if (!user) throw new BadRequestException('Email not found');
+      if (!user || !user.isVerified)
+        throw new BadRequestException('Email not found');
     } else {
       user = await this.userRepo.findByUsername(usernameOrEmail);
-      if (!user) throw new BadRequestException('Username not found');
+      if (!user || !user.isVerified)
+        throw new BadRequestException('Username not found');
     }
+
     const match = await this.authService.compare(password, user.password);
 
     if (!match) throw new BadRequestException('Invalid password');

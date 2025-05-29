@@ -19,7 +19,7 @@ export class RegisterUseCase {
     if (existing) throw new BadRequestException('User already exists');
 
     const hash = await this.authService.hash(password);
-    const user = new UserEntity(null, username, email, hash);
+    const user = new UserEntity(null, username, email, hash, false);
 
     const savedUser = await this.userRepo.save(user);
     if (savedUser.id === null) {

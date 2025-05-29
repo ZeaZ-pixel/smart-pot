@@ -4,6 +4,7 @@ export class UserEntity {
     public username: string,
     public email: string,
     public password: string,
+    public isVerified: boolean,
     public refreshToken?: string,
     public readonly createdAt: Date = new Date(),
     public updatedAt: Date = new Date(),
