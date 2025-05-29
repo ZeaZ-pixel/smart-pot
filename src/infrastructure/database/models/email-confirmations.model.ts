@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -17,7 +18,11 @@ export class EmailConfirmationModel {
   @ManyToOne(() => UserModel, (user) => user.emailConfirmations, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'user_id' })
   user: UserModel;
+
+  @Column({ name: 'user_id' })
+  userId: number;
 
   @Column({ type: 'char', length: 6 })
   @Index()
