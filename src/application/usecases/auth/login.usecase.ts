@@ -18,6 +18,7 @@ export class LoginUseCase {
     let user: UserEntity | null = null;
     if (isValidEmail(usernameOrEmail)) {
       user = await this.userRepo.findByEmail(usernameOrEmail);
+      console.log(user?.isVerified);
       if (!user || !user.isVerified)
         throw new BadRequestException('Email not found');
     } else {

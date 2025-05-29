@@ -16,6 +16,16 @@ export class UserRepositoryImpl implements IUserRepository {
     return user ? this.toDomain(user) : null;
   }
 
+  async verifyUserEmail(userId: number): Promise<UserEntity | null> {
+    await this.repo.update(userId, {
+      isVerified: true,
+      updatedAt: new Date(),
+    });
+    const updatedUser = await this.repo.findOne({ where: { id: userId } });
+
+    return updatedUser ? this.toDomain(updatedUser) : null;
+  }
+
   async findByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.repo.findOne({ where: { email } });
     return user ? this.toDomain(user) : null;
@@ -28,6 +38,7 @@ export class UserRepositoryImpl implements IUserRepository {
 
   async save(user: UserEntity): Promise<UserEntity> {
     const ormUser = this.repo.create({
+      id: user?.id ?? undefined,
       email: user.email,
       username: user.username,
       password: user.password,

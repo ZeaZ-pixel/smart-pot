@@ -34,15 +34,7 @@ export class EmailConfirmationRepositoryImpl
       result = await this.repo.save(existing);
     } else {
       // Создаём новую запись
-      const model = this.repo.create({
-        userId: entity.userId,
-        code: entity.code,
-        type: entity.type,
-        expiresAt: entity.expiresAt,
-        attemptCount: entity.attemptCount ?? 0,
-        isUsed: entity.isUsed ?? false,
-        createdAt: entity.createdAt ?? new Date(),
-      });
+      const model = this.repo.create(this.toPersistence(entity));
 
       result = await this.repo.save(model);
     }

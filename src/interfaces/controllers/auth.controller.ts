@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 
 import {
   EmailCodeDto,
+  EmailCodeVerifyDto,
   LoginDto,
   RefreshDto,
   RegisterDto,
@@ -11,6 +12,7 @@ import {
   RefreshTokensUseCase,
   RegisterUseCase,
   SendEmailVerifyCodeUseCase,
+  VerifyEmailCodeUseCase,
 } from 'src/application/usecases/auth';
 
 @Controller('auth')
@@ -20,6 +22,7 @@ export class AuthController {
     private readonly loginUseCase: LoginUseCase,
     private readonly refreshUseCase: RefreshTokensUseCase,
     private readonly sendEmailVerifyCodeUseCase: SendEmailVerifyCodeUseCase,
+    private readonly verifyEmailCodeUseCase: VerifyEmailCodeUseCase,
   ) {}
 
   @Post('register')
@@ -39,6 +42,11 @@ export class AuthController {
 
   @Post('email-code')
   async emailCode(@Body() dto: EmailCodeDto) {
-    return this.sendEmailVerifyCodeUseCase.execute(dto.userId, dto.email);
+    return this.sendEmailVerifyCodeUseCase.execute(dto.userId);
+  }
+
+  @Post('email-code/verify')
+  async emailCodeVerify(@Body() dto: EmailCodeVerifyDto) {
+    return this.verifyEmailCodeUseCase.execute(dto.userId, dto.code);
   }
 }

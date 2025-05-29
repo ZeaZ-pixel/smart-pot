@@ -1,4 +1,10 @@
-import { IsEmail, IsInt, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsInt,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterDto {
@@ -16,14 +22,29 @@ export class RegisterDto {
   password: string;
 }
 
+export class RegisterResponseDto {
+  constructor(
+    public readonly id: number,
+    public readonly email: string,
+    public readonly username: string,
+  ) {}
+}
+
 export class EmailCodeDto {
   @ApiProperty()
   @IsInt()
   userId: number;
+}
 
+export class EmailCodeVerifyDto {
   @ApiProperty()
-  @IsEmail()
-  email: string;
+  @IsInt()
+  userId: number;
+
+  @IsString()
+  @MinLength(6)
+  @MaxLength(6)
+  code: string;
 }
 
 export class RefreshDto {
