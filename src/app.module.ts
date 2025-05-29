@@ -12,6 +12,7 @@ import { GetMeUseCase } from './application/usecases/user/get-me.usecase';
 import { UserRepositoryImpl } from './infrastructure/repositories/user.repository.impl';
 import { AuthServiceImpl } from './application/services/auth.service.impl';
 import { EmailSenderServiceImpl } from './application/services/email-sender.service.impl';
+import { EmailConfirmationRepositoryImpl } from './infrastructure/repositories/email-confirmation.repository.impl';
 
 @Module({
   imports: [
@@ -45,6 +46,10 @@ import { EmailSenderServiceImpl } from './application/services/email-sender.serv
     {
       provide: 'UserRepository',
       useClass: UserRepositoryImpl,
+    },
+    {
+      provide: 'EmailConfirmationRepository',
+      useClass: EmailConfirmationRepositoryImpl,
     },
     {
       provide: 'EmailSenderService',

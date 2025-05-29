@@ -14,7 +14,7 @@ export class RegisterUseCase {
     username: string,
     email: string,
     password: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<UserEntity> {
     const existing = await this.userRepo.findByEmail(email);
     if (existing) throw new BadRequestException('User already exists');
 
@@ -26,12 +26,6 @@ export class RegisterUseCase {
       throw new BadRequestException('User ID was not assigned by the database');
     }
 
-    const accessToken = this.authService.generateAccessToken(savedUser.id);
-    const refreshToken = this.authService.generateRefreshToken(savedUser.id);
-    const hashedRefreshToken = await this.authService.hash(refreshToken);
-    savedUser.setRefreshToken(hashedRefreshToken);
-    await this.userRepo.updateRefreshToken(savedUser.id, hashedRefreshToken);
-
-    return { accessToken, refreshToken };
+    return savedUser;
   }
 }

@@ -1,10 +1,16 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
-import { LoginDto, RefreshDto, RegisterDto } from '../dto/auth.dto';
+import {
+  EmailCodeDto,
+  LoginDto,
+  RefreshDto,
+  RegisterDto,
+} from '../dto/auth.dto';
 import {
   LoginUseCase,
   RefreshTokensUseCase,
   RegisterUseCase,
+  SendEmailVerifyCodeUseCase,
 } from 'src/application/usecases/auth';
 
 @Controller('auth')
@@ -13,6 +19,7 @@ export class AuthController {
     private readonly registerUseCase: RegisterUseCase,
     private readonly loginUseCase: LoginUseCase,
     private readonly refreshUseCase: RefreshTokensUseCase,
+    private readonly sendEmailVerifyCodeUseCase: SendEmailVerifyCodeUseCase,
   ) {}
 
   @Post('register')
@@ -28,5 +35,10 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Body() dto: RefreshDto) {
     return this.refreshUseCase.execute(dto.refreshToken);
+  }
+
+  @Post('email-code')
+  async emailCode(@Body() dto: EmailCodeDto) {
+    return this.sendEmailVerifyCodeUseCase.execute(dto.userId, dto.email);
   }
 }
