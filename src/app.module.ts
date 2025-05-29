@@ -11,6 +11,7 @@ import authUseCases from './application/usecases/auth';
 import { GetMeUseCase } from './application/usecases/user/get-me.usecase';
 import { UserRepositoryImpl } from './infrastructure/repositories/user.repository.impl';
 import { AuthServiceImpl } from './application/services/auth.service.impl';
+import { EmailSenderServiceImpl } from './application/services/email-sender.service.impl';
 
 @Module({
   imports: [
@@ -44,6 +45,10 @@ import { AuthServiceImpl } from './application/services/auth.service.impl';
     {
       provide: 'UserRepository',
       useClass: UserRepositoryImpl,
+    },
+    {
+      provide: 'EmailSenderService',
+      useClass: EmailSenderServiceImpl,
     },
     {
       provide: 'AuthService',
