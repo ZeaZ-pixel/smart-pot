@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserModel } from './user.model';
 
 @Entity('pots')
 export class PotModel {
@@ -13,6 +16,15 @@ export class PotModel {
 
   @Column({ unique: true })
   name: string;
+
+  @ManyToOne(() => UserModel, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'user_id' })
+  user: UserModel;
+
+  @Column({ name: 'user_id' })
+  userId: number;
 
   @Column({ type: 'float', nullable: true })
   temperature: number;

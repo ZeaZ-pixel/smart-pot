@@ -15,7 +15,7 @@ export class EmailConfirmationModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserModel, (user) => user.emailConfirmations, {
+  @ManyToOne(() => UserModel, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'user_id' })

@@ -26,11 +26,18 @@ export class PotRepositoryImpl implements IPotRepository {
     const pot = await this.repo.findOneBy({ id: potId });
     return pot ? this.toDomain(pot) : null;
   }
-  async getAll(limit: number, offset: number): Promise<PotEntity[]> {
+  async getAll(
+    limit: number,
+    offset: number,
+    userId?: number,
+  ): Promise<PotEntity[]> {
     const pots = await this.repo.find({
       skip: offset,
       take: limit,
       order: { createdAt: 'DESC' },
+      where: {
+        userId,
+      },
     });
 
     return pots.map((pot) => this.toDomain(pot));
@@ -39,6 +46,7 @@ export class PotRepositoryImpl implements IPotRepository {
   private toDomain(model: PotModel): PotEntity {
     return new PotEntity(
       model.id,
+      model.userId,
       model.name,
       model.temperature,
       model.humidity,
@@ -56,6 +64,7 @@ export class PotRepositoryImpl implements IPotRepository {
   private toPersistence(entity: PotEntity): Partial<PotModel> {
     return {
       id: entity.id!,
+      userId: entity.userId,
       name: entity.name,
       temperature: entity.temperature!,
       humidity: entity.humidity!,
