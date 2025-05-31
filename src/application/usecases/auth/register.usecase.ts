@@ -16,9 +16,11 @@ export class RegisterUseCase {
     email: string,
     password: string,
   ): Promise<RegisterResponseDto> {
+    const TTL_MS = 15 * 60 * 1000;
+    const cutoff = new Date(Date.now() - TTL_MS);
+
     const existingByEmail = await this.userRepo.findByEmail(email);
     const existingByUsername = await this.userRepo.findByUsername(username);
-    const now = new Date();
 
     if (existingByEmail?.isVerified) {
       throw new BadRequestException('Email already in use');
@@ -27,20 +29,19 @@ export class RegisterUseCase {
     if (
       existingByUsername &&
       existingByUsername.email !== email &&
-      existingByUsername.isVerified
+      (existingByUsername.isVerified || existingByUsername.createdAt > cutoff)
     ) {
       throw new BadRequestException('Username already in use');
     }
 
-    const hashedPassword = await this.authService.hash(password);
+    const hashed = await this.authService.hash(password);
 
     if (existingByEmail) {
       existingByEmail.username = username;
-      existingByEmail.password = hashedPassword;
-      existingByEmail.updatedAt = now;
+      existingByEmail.password = hashed;
+      existingByEmail.updatedAt = new Date();
 
       const updated = await this.userRepo.save(existingByEmail);
-
       return new RegisterResponseDto(
         updated.id!,
         updated.email,
@@ -48,17 +49,9 @@ export class RegisterUseCase {
       );
     }
 
-    const user = new UserEntity(null, username, email, hashedPassword, false);
+    const newUser = new UserEntity(null, username, email, hashed, false);
+    const saved = await this.userRepo.save(newUser);
 
-    const savedUser = await this.userRepo.save(user);
-    if (savedUser.id === null) {
-      throw new BadRequestException('User ID was not assigned by the database');
-    }
-
-    return new RegisterResponseDto(
-      savedUser.id,
-      savedUser.email,
-      savedUser.username,
-    );
+    return new RegisterResponseDto(saved.id!, saved.email, saved.username);
   }
 }

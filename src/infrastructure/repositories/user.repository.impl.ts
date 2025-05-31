@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserEntity } from 'src/domain/entities/user.entity';
 import { IUserRepository } from 'src/domain/repositories/user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { UserModel } from '../database/models/user.model';
 
 @Injectable()
@@ -11,6 +11,18 @@ export class UserRepositoryImpl implements IUserRepository {
     @InjectRepository(UserModel)
     private readonly repo: Repository<UserModel>,
   ) {}
+
+  async deleteUnverifiedOlderThan(minutes: number): Promise<number> {
+    const cutoff = new Date(Date.now() - minutes * 60 * 1000);
+
+    const result = await this.repo.delete({
+      isVerified: false,
+      createdAt: LessThan(cutoff),
+    });
+
+    return result.affected ?? 0;
+  }
+
   async findByUsername(username: string): Promise<UserEntity | null> {
     const user = await this.repo.findOne({ where: { username } });
     return user ? this.toDomain(user) : null;

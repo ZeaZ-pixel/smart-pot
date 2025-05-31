@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { IEmailSender } from 'src/domain/services/email-sender.service';
+import { IEmailSenderService } from 'src/domain/services/email-sender.service';
 
 @Injectable()
-export class EmailSenderServiceImpl implements IEmailSender {
+export class EmailSenderServiceImpl implements IEmailSenderService {
   private transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
