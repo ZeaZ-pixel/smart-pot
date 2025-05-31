@@ -20,27 +20,27 @@ export class PotModel {
   @Column({ type: 'float', nullable: true })
   humidity: number;
 
-  @Column({ type: 'float', nullable: true })
+  @Column({ name: 'soil_moisture', type: 'float', nullable: true })
   soilMoisture: number;
 
   @Column({ type: 'float', nullable: true })
   photoresistor: number;
 
-  @Column({ type: 'float', nullable: true })
+  @Column({ name: 'water_sensor', type: 'float', nullable: true })
   waterSensor: number;
 
-  @Column({ type: 'float', nullable: true })
+  @Column({ name: 'vitamin_sensor', type: 'float', nullable: true })
   vitaminSensor: number;
 
-  @Column({ type: 'float', nullable: true })
+  @Column({ name: 'ph_value', type: 'float', nullable: true })
   PHValue: number;
 
   @Column({ type: 'timestamp' })
   timestamp: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
