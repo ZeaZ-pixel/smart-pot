@@ -15,6 +15,7 @@ import { EmailSenderServiceImpl } from './application/services/email-sender.serv
 import { EmailConfirmationRepositoryImpl } from './infrastructure/repositories/email-confirmation.repository.impl';
 import { ScheduleModule } from '@nestjs/schedule';
 import { UserCleanupScheduler } from './interfaces/schedulers/user-cleanup.sceduler';
+import { UserProfileRepositoryImpl } from './infrastructure/repositories/user-profile.repository.impl';
 
 @Module({
   imports: [
@@ -49,6 +50,10 @@ import { UserCleanupScheduler } from './interfaces/schedulers/user-cleanup.scedu
     {
       provide: 'UserRepository',
       useClass: UserRepositoryImpl,
+    },
+    {
+      provide: 'UserProfileRepository',
+      useClass: UserProfileRepositoryImpl,
     },
     {
       provide: 'EmailConfirmationRepository',

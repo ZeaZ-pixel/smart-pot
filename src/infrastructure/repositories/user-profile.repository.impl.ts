@@ -18,7 +18,7 @@ export class UserProfileRepositoryImpl implements IUserProfileRepository {
   }
 
   async findByUserId(userId: number): Promise<UserProfileEntity | null> {
-    const profile = await this.repo.findOneBy({ id: userId });
+    const profile = await this.repo.findOneBy({ user: { id: userId } });
     return profile ? this.toDomain(profile) : null;
   }
 
