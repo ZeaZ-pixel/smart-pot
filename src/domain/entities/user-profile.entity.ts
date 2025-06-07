@@ -1,6 +1,10 @@
 export class UserProfile {
   constructor(
-    public readonly username: string,
-    public readonly email: string,
+    public readonly id: number | null,
+    public firstName: string,
+    public lastName: string,
+    public dateOfBirth: Date,
+    public phoneNumber: string,
+    public avatarUrl: string,
   ) {}
 }

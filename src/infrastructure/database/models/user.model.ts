@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserProfileModel } from './user-profile.model';
 
 @Entity('users')
 export class UserModel {
@@ -25,6 +28,10 @@ export class UserModel {
 
   @Column({ name: 'refresh_token', nullable: true })
   refreshToken: string;
+
+  @OneToOne(() => UserProfileModel, (profile) => profile.user)
+  @JoinColumn() // обязательно на одной стороне!
+  profile: UserProfileModel;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
