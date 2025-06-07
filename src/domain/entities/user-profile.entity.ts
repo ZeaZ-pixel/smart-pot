@@ -1,4 +1,4 @@
-export class UserProfile {
+export class UserProfileEntity {
   constructor(
     public readonly id: number | null,
     public firstName: string,
