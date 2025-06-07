@@ -1,4 +1,5 @@
 import { UserModel } from './user.model';
 import { PotModel } from './pot.model';
 import { EmailConfirmationModel } from './email-confirmations.model';
-export default [UserModel, PotModel, EmailConfirmationModel];
+import { UserProfileModel } from './user-profile.model';
+export default [UserModel, PotModel, EmailConfirmationModel, UserProfileModel];
