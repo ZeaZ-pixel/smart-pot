@@ -29,6 +29,7 @@ async function bootstrap() {
     .setTitle('API документация')
     .setDescription('Автоматически сгенерированная Swagger документация')
     .setVersion('1.0')
+    .addServer('https://snaptap.org')
     .addTag('api')
     .build();
   const document = SwaggerModule.createDocument(app, config);
