@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Put, Request, UseGuards } from '@nestjs/common';
 import {
   GetMeUseCase,
   EditProfileUseCase,
@@ -31,7 +24,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('edit')
+  @Put('edit')
   async editProfile(
     @Request() req: AuthenticatedRequest,
     @Body() dto: EditProfileDto,

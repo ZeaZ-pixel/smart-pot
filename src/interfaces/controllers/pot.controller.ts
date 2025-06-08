@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -48,7 +50,7 @@ export class PotController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('edit/:id')
+  @Patch('edit/:id')
   async editPot(
     @Request() req: AuthenticatedRequest,
     @Body() dto: EditPotDto,
@@ -73,7 +75,7 @@ export class PotController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('delete/:id')
+  @Delete('delete/:id')
   async deletePot(
     @Request() req: AuthenticatedRequest,
     @Param('id') potId: number,
