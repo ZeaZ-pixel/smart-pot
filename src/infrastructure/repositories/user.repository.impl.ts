@@ -12,6 +12,19 @@ export class UserRepositoryImpl implements IUserRepository {
     private readonly repo: Repository<UserModel>,
   ) {}
 
+  async changePassword(
+    userId: number,
+    password: string,
+  ): Promise<UserEntity | null> {
+    await this.repo.update(userId, {
+      password,
+      updatedAt: new Date(),
+    });
+    const updatedUser = await this.repo.findOne({ where: { id: userId } });
+
+    return updatedUser ? this.toDomain(updatedUser) : null;
+  }
+
   async deleteUnverifiedOlderThan(minutes: number): Promise<number> {
     const cutoff = new Date(Date.now() - minutes * 60 * 1000);
 
@@ -28,12 +41,12 @@ export class UserRepositoryImpl implements IUserRepository {
     return user ? this.toDomain(user) : null;
   }
 
-  async verifyUserEmail(userId: number): Promise<UserEntity | null> {
-    await this.repo.update(userId, {
+  async verifyUserEmail(email: string): Promise<UserEntity | null> {
+    await this.repo.update(email, {
       isVerified: true,
       updatedAt: new Date(),
     });
-    const updatedUser = await this.repo.findOne({ where: { id: userId } });
+    const updatedUser = await this.repo.findOne({ where: { email } });
 
     return updatedUser ? this.toDomain(updatedUser) : null;
   }

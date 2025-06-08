@@ -22,6 +22,7 @@ export class RegisterDto {
   password: string;
 }
 
+
 export class RegisterResponseDto {
   constructor(
     public readonly id: number,
@@ -32,19 +33,36 @@ export class RegisterResponseDto {
 
 export class EmailCodeDto {
   @ApiProperty()
-  @IsInt()
-  userId: number;
+  @IsEmail()
+  email: string;
 }
 
 export class EmailCodeVerifyDto {
   @ApiProperty()
-  @IsInt()
-  userId: number;
+  @IsEmail()
+  email: string;
 
   @IsString()
   @MinLength(6)
   @MaxLength(6)
   code: string;
+}
+
+export class ResetPasswordDto {
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
+  @MinLength(6)
+  @MaxLength(6)
+  code: string;
+
+  @ApiProperty()
+  @IsString()
+  @MinLength(8)
+  password: string;
 }
 
 export class RefreshDto {

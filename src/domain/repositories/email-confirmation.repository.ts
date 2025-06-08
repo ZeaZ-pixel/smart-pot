@@ -9,7 +9,17 @@ export interface IEmailConfirmationRepository {
     userId: number,
     type: EmailCodeType,
   ): Promise<EmailConfirmationEntity | null>;
-  findByCode(
+  resetCode(
+    userId: number,
+    type: EmailCodeType,
+    code: string,
+    expiresAt: Date,
+  ): Promise<EmailConfirmationEntity | null>;
+  findByUserIdAndType(
+    userId: number,
+    type: EmailCodeType,
+  ): Promise<EmailConfirmationEntity | null>;
+  findActiveByCode(
     userId: number,
     code: string,
     type: EmailCodeType,

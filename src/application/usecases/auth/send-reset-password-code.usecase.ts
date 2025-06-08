@@ -1,13 +1,13 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { EmailSenderServiceImpl } from 'src/application/services/email-sender.service.impl';
 import { EmailConfirmationEntity } from 'src/domain/entities/email-confirmation.entity';
 import { IEmailConfirmationRepository } from 'src/domain/repositories/email-confirmation.repository';
 import { EmailCodeType } from 'src/domain/types/email-code-type.enum';
 import { UserRepositoryImpl } from 'src/infrastructure/repositories/user.repository.impl';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class SendEmailVerifyCodeUseCase {
+export class SendResetPasswordCodeUseCase {
   constructor(
     @Inject('EmailConfirmationRepository')
     private readonly emailConfirmationRepo: IEmailConfirmationRepository,
@@ -49,14 +49,14 @@ export class SendEmailVerifyCodeUseCase {
     const emailConfirmation =
       await this.emailConfirmationRepo.findByUserIdAndType(
         user.id!,
-        EmailCodeType.VERIFY_EMAIL,
+        EmailCodeType.RESET_PASSWORD,
       );
     if (!emailConfirmation) {
       await this.emailConfirmationRepo.create(
         new EmailConfirmationEntity(
           null,
           code,
-          EmailCodeType.VERIFY_EMAIL,
+          EmailCodeType.RESET_PASSWORD,
           expiresAt,
           user.id!,
           false,
@@ -64,12 +64,9 @@ export class SendEmailVerifyCodeUseCase {
         ),
       );
     } else {
-      if (emailConfirmation.attemptCount > codeConfig.maxAttempts) {
-        throw new BadRequestException('Too many attempts');
-      }
       await this.emailConfirmationRepo.resetCode(
         user.id!,
-        EmailCodeType.VERIFY_EMAIL,
+        EmailCodeType.RESET_PASSWORD,
         code,
         expiresAt,
       );

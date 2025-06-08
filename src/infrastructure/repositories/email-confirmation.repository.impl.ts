@@ -16,30 +16,46 @@ export class EmailConfirmationRepositoryImpl
   async create(
     entity: EmailConfirmationEntity,
   ): Promise<EmailConfirmationEntity> {
+    const model = this.repo.create(this.toPersistence(entity));
+
+    const result = await this.repo.save(model);
+    return this.toDomain(result);
+  }
+
+  async resetCode(
+    userId: number,
+    type: EmailCodeType,
+    code: string,
+    expiresAt: Date,
+  ): Promise<EmailConfirmationEntity | null> {
     const existing = await this.repo.findOne({
       where: {
-        userId: entity.userId,
-        type: entity.type,
+        userId: userId,
+        type: type,
       },
     });
-
-    let result: EmailConfirmationModel;
-
-    if (existing) {
-      existing.code = entity.code;
-      existing.expiresAt = entity.expiresAt;
-      existing.attemptCount = entity.attemptCount ?? 0;
-      existing.isUsed = entity.isUsed ?? false;
-
-      result = await this.repo.save(existing);
-    } else {
-      // Создаём новую запись
-      const model = this.repo.create(this.toPersistence(entity));
-
-      result = await this.repo.save(model);
+    if (!existing) {
+      return null;
     }
 
-    return this.toDomain(result);
+    existing.code = code;
+    existing.expiresAt = expiresAt;
+
+    const result = await this.repo.save(existing);
+    return result;
+  }
+
+  async findByUserIdAndType(
+    userId: number,
+    type: EmailCodeType,
+  ): Promise<EmailConfirmationEntity | null> {
+    const model = await this.repo.findOne({
+      where: {
+        userId,
+        type,
+      },
+    });
+    return model ? this.toDomain(model) : null;
   }
 
   async findActiveByUserIdAndType(
@@ -57,7 +73,7 @@ export class EmailConfirmationRepositoryImpl
     return model ? this.toDomain(model) : null;
   }
 
-  async findByCode(
+  async findActiveByCode(
     userId: number,
     code: string,
     type: EmailCodeType,

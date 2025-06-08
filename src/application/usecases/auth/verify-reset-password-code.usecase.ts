@@ -1,23 +1,24 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { UserRepositoryImpl } from 'src/infrastructure/repositories/user.repository.impl';
+import { UserEntity } from 'src/domain/entities/user.entity';
 import { IEmailConfirmationRepository } from 'src/domain/repositories/email-confirmation.repository';
-import { IUserRepository } from 'src/domain/repositories/user.repository';
-import { IAuthService } from 'src/domain/services/auth.service';
 import { EmailCodeType } from 'src/domain/types/email-code-type.enum';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class VerifyEmailCodeUseCase {
+export class VerifyResetPasswordCodeUseCase {
   constructor(
+    @Inject('UserRepository')
+    private readonly userRepository: UserRepositoryImpl,
     @Inject('EmailConfirmationRepository')
     private readonly emailConfirmationRepo: IEmailConfirmationRepository,
-    @Inject('UserRepository') private readonly userRepository: IUserRepository,
-    @Inject('AuthService') private readonly authService: IAuthService,
     private readonly configService: ConfigService,
   ) {}
   async execute(
     email: string,
     code: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+    password: string,
+  ): Promise<UserEntity | null> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new BadRequestException('User not found');
@@ -25,9 +26,12 @@ export class VerifyEmailCodeUseCase {
     const emailConfirmation = await this.emailConfirmationRepo.findActiveByCode(
       user.id!,
       code,
-      EmailCodeType.VERIFY_EMAIL,
+      EmailCodeType.RESET_PASSWORD,
     );
-    if (!emailConfirmation || code !== emailConfirmation.code) {
+    if (!emailConfirmation) {
+      throw new BadRequestException('Email confirmation not found');
+    }
+    if (emailConfirmation.code !== code) {
       throw new BadRequestException('Invalid code');
     }
 
@@ -41,22 +45,12 @@ export class VerifyEmailCodeUseCase {
     if (!codeConfig) {
       throw new Error('Reset password code configuration is not defined');
     }
-
     if (emailConfirmation.attemptCount > codeConfig.maxAttempts) {
       throw new BadRequestException('Too many attempts');
     }
-
-    await this.emailConfirmationRepo.incrementAttemptCount(
-      emailConfirmation.id!,
-    );
-    await this.emailConfirmationRepo.markAsUsed(emailConfirmation.id!);
-    await this.userRepository.verifyUserEmail(email);
-    const accessToken = this.authService.generateAccessToken(user.id!);
-    const refreshToken = this.authService.generateRefreshToken(user.id!);
-    const hashedRefreshToken = await this.authService.hash(refreshToken);
-    user.setRefreshToken(hashedRefreshToken);
-    await this.userRepository.updateRefreshToken(user.id!, hashedRefreshToken);
-
-    return { accessToken, refreshToken };
+    if (emailConfirmation.expiresAt < new Date()) {
+      throw new BadRequestException('Code expired');
+    }
+    return this.userRepository.changePassword(user.id!, password);
   }
 }

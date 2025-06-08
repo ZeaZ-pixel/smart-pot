@@ -6,6 +6,7 @@ import {
   LoginDto,
   RefreshDto,
   RegisterDto,
+  ResetPasswordDto,
 } from '../dto/auth.dto';
 import {
   LoginUseCase,
@@ -13,6 +14,8 @@ import {
   RegisterUseCase,
   SendEmailVerifyCodeUseCase,
   VerifyEmailCodeUseCase,
+  VerifyResetPasswordCodeUseCase,
+  SendResetPasswordCodeUseCase,
 } from 'src/application/usecases/auth';
 
 @Controller('auth')
@@ -23,6 +26,8 @@ export class AuthController {
     private readonly refreshUseCase: RefreshTokensUseCase,
     private readonly sendEmailVerifyCodeUseCase: SendEmailVerifyCodeUseCase,
     private readonly verifyEmailCodeUseCase: VerifyEmailCodeUseCase,
+    private readonly verifyResetPasswordCodeUseCase: VerifyResetPasswordCodeUseCase,
+    private readonly sendResetPasswordCodeUseCase: SendResetPasswordCodeUseCase,
   ) {}
 
   @Post('register')
@@ -42,11 +47,25 @@ export class AuthController {
 
   @Post('email-code')
   async emailCode(@Body() dto: EmailCodeDto) {
-    return this.sendEmailVerifyCodeUseCase.execute(dto.userId);
+    return this.sendEmailVerifyCodeUseCase.execute(dto.email);
   }
 
   @Post('email-code/verify')
   async emailCodeVerify(@Body() dto: EmailCodeVerifyDto) {
-    return this.verifyEmailCodeUseCase.execute(dto.userId, dto.code);
+    return this.verifyEmailCodeUseCase.execute(dto.email, dto.code);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() dto: EmailCodeDto) {
+    return this.sendResetPasswordCodeUseCase.execute(dto.email);
+  }
+
+  @Post('reset-password/verify')
+  async sendResetPasswordCode(@Body() dto: ResetPasswordDto) {
+    return this.verifyResetPasswordCodeUseCase.execute(
+      dto.email,
+      dto.code,
+      dto.password,
+    );
   }
 }
