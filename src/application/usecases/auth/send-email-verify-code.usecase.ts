@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EmailSenderServiceImpl } from 'src/application/services/email-sender.service.impl';
 import { EmailConfirmationEntity } from 'src/domain/entities/email-confirmation.entity';
@@ -30,11 +35,15 @@ export class SendEmailVerifyCodeUseCase {
       code: { expiresInSeconds: number; maxAttempts: number };
     }>('resetPassword');
     if (!resetPasswordConfig) {
-      throw new Error('Reset password configuration is not defined');
+      throw new InternalServerErrorException(
+        'Reset password configuration is not defined',
+      );
     }
     const codeConfig = resetPasswordConfig.code;
     if (!codeConfig) {
-      throw new Error('Reset password code configuration is not defined');
+      throw new InternalServerErrorException(
+        'Reset password code configuration is not defined',
+      );
     }
     const expiresAt = new Date(Date.now() + codeConfig.expiresInSeconds * 1000);
     const user = await this.userRepository.findByEmail(email);
