@@ -64,9 +64,6 @@ export class SendEmailVerifyCodeUseCase {
         ),
       );
     } else {
-      if (emailConfirmation.attemptCount > codeConfig.maxAttempts) {
-        throw new BadRequestException('Too many attempts');
-      }
       await this.emailConfirmationRepo.resetCode(
         user.id!,
         EmailCodeType.VERIFY_EMAIL,
