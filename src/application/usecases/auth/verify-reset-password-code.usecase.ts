@@ -1,4 +1,9 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { UserRepositoryImpl } from 'src/infrastructure/repositories/user.repository.impl';
 import { UserEntity } from 'src/domain/entities/user.entity';
 import { IEmailConfirmationRepository } from 'src/domain/repositories/email-confirmation.repository';
@@ -35,15 +40,19 @@ export class VerifyResetPasswordCodeUseCase {
       throw new BadRequestException('Invalid code');
     }
 
-    const resetPasswordConfig = this.configService.get<{
+    const emailCodeConfig = this.configService.get<{
       code: { expiresInSeconds: number; maxAttempts: number };
-    }>('resetPassword');
-    if (!resetPasswordConfig) {
-      throw new Error('Reset password configuration is not defined');
+    }>('emailCodeConfig');
+    if (!emailCodeConfig) {
+      throw new InternalServerErrorException(
+        'Email code configuration is not defined',
+      );
     }
-    const codeConfig = resetPasswordConfig.code;
+    const codeConfig = emailCodeConfig.code;
     if (!codeConfig) {
-      throw new Error('Reset password code configuration is not defined');
+      throw new InternalServerErrorException(
+        'Email code configuration is not defined',
+      );
     }
     if (emailConfirmation.attemptCount > codeConfig.maxAttempts) {
       throw new BadRequestException('Too many attempts');
