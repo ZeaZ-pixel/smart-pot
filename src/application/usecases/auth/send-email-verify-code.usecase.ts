@@ -31,18 +31,19 @@ export class SendEmailVerifyCodeUseCase {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
     const code = String(array[0] % 1_000_000).padStart(6, '0');
-    const resetPasswordConfig = this.configService.get<{
+    const emailCodeConfig = this.configService.get<{
       code: { expiresInSeconds: number; maxAttempts: number };
-    }>('resetPassword');
-    if (!resetPasswordConfig) {
+    }>('emailCodeConfig');
+    console.log(emailCodeConfig);
+    if (!emailCodeConfig) {
       throw new InternalServerErrorException(
-        'Reset password configuration is not defined',
+        'Email code configuration is not defined',
       );
     }
-    const codeConfig = resetPasswordConfig.code;
+    const codeConfig = emailCodeConfig.code;
     if (!codeConfig) {
       throw new InternalServerErrorException(
-        'Reset password code configuration is not defined',
+        'Email code configuration is not defined',
       );
     }
     const expiresAt = new Date(Date.now() + codeConfig.expiresInSeconds * 1000);
@@ -92,7 +93,7 @@ export class SendEmailVerifyCodeUseCase {
 
     await this.emailSenderService.send(user.email, 'Сброс пароля', message);
     return {
-      message: 'Password reset code has been sent successfully',
+      message: 'Email confirm code has been sent successfully',
       codeLifetime: codeConfig.expiresInSeconds,
       maxAttempts: codeConfig.maxAttempts,
     };

@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ConfigModule } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
@@ -11,23 +10,6 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe());
-  void ConfigModule.forRoot({
-    isGlobal: true,
-    load: [
-      () => ({
-        resetPassword: {
-          code: {
-            expiresInSeconds: parseInt(
-              process.env.RESET_PASSWORD_CODE_EXPIRES_IN_SECONDS || '600',
-            ),
-            maxAttempts: parseInt(
-              process.env.RESET_PASSWORD_MAX_ATTEMPTS || '5',
-            ),
-          },
-        },
-      }),
-    ],
-  });
   const config = new DocumentBuilder()
     .setTitle('API документация')
     .setDescription('Автоматически сгенерированная Swagger документация')

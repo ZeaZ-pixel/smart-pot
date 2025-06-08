@@ -23,8 +23,22 @@ import { PotController } from './interfaces/controllers/pot.controller';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [
+        () => ({
+          emailCodeConfig: {
+            code: {
+              expiresInSeconds: parseInt(
+                process.env.EMAIL_CODE_EXPIRES_IN_SECONDS || '600',
+              ),
+              maxAttempts: parseInt(process.env.EMAIL_CODE_MAX_ATTEMPTS || '5'),
+            },
+          },
+        }),
+      ],
+    }),
     ScheduleModule.forRoot(),
-    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST || 'localhost',

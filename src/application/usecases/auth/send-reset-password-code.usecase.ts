@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { EmailSenderServiceImpl } from 'src/application/services/email-sender.service.impl';
 import { EmailConfirmationEntity } from 'src/domain/entities/email-confirmation.entity';
 import { IEmailConfirmationRepository } from 'src/domain/repositories/email-confirmation.repository';
@@ -26,15 +31,19 @@ export class SendResetPasswordCodeUseCase {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
     const code = String(array[0] % 1_000_000).padStart(6, '0');
-    const resetPasswordConfig = this.configService.get<{
+    const emailCodeConfig = this.configService.get<{
       code: { expiresInSeconds: number; maxAttempts: number };
-    }>('resetPassword');
-    if (!resetPasswordConfig) {
-      throw new Error('Reset password configuration is not defined');
+    }>('emailCodeConfig');
+    if (!emailCodeConfig) {
+      throw new InternalServerErrorException(
+        'Email code configuration is not defined',
+      );
     }
-    const codeConfig = resetPasswordConfig.code;
+    const codeConfig = emailCodeConfig.code;
     if (!codeConfig) {
-      throw new Error('Reset password code configuration is not defined');
+      throw new InternalServerErrorException(
+        'Email code configuration is not defined',
+      );
     }
     const expiresAt = new Date(Date.now() + codeConfig.expiresInSeconds * 1000);
     const user = await this.userRepository.findByEmail(email);
@@ -64,6 +73,9 @@ export class SendResetPasswordCodeUseCase {
         ),
       );
     } else {
+      if (emailConfirmation.attemptCount > 5) {
+        throw new BadRequestException('Too many attempts');
+      }
       await this.emailConfirmationRepo.resetCode(
         user.id!,
         EmailCodeType.RESET_PASSWORD,
