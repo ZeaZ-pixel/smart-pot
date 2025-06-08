@@ -42,10 +42,13 @@ export class UserRepositoryImpl implements IUserRepository {
   }
 
   async verifyUserEmail(email: string): Promise<UserEntity | null> {
-    await this.repo.update(email, {
-      isVerified: true,
-      updatedAt: new Date(),
-    });
+    await this.repo.update(
+      { email },
+      {
+        isVerified: true,
+        updatedAt: new Date(),
+      },
+    );
     const updatedUser = await this.repo.findOne({ where: { email } });
 
     return updatedUser ? this.toDomain(updatedUser) : null;

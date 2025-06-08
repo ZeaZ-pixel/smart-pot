@@ -40,6 +40,7 @@ export class EmailConfirmationRepositoryImpl
 
     existing.code = code;
     existing.expiresAt = expiresAt;
+    existing.isUsed = false;
 
     const result = await this.repo.save(existing);
     return result;

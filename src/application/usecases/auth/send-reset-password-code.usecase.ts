@@ -51,10 +51,6 @@ export class SendResetPasswordCodeUseCase {
       throw new BadRequestException('User not found');
     }
 
-    if (user.isVerified) {
-      throw new BadRequestException('User already verified');
-    }
-
     const emailConfirmation =
       await this.emailConfirmationRepo.findByUserIdAndType(
         user.id!,

@@ -9,6 +9,7 @@ import { UserEntity } from 'src/domain/entities/user.entity';
 import { IEmailConfirmationRepository } from 'src/domain/repositories/email-confirmation.repository';
 import { EmailCodeType } from 'src/domain/types/email-code-type.enum';
 import { ConfigService } from '@nestjs/config';
+import { IAuthService } from 'src/domain/services/auth.service';
 
 @Injectable()
 export class VerifyResetPasswordCodeUseCase {
@@ -17,6 +18,8 @@ export class VerifyResetPasswordCodeUseCase {
     private readonly userRepository: UserRepositoryImpl,
     @Inject('EmailConfirmationRepository')
     private readonly emailConfirmationRepo: IEmailConfirmationRepository,
+    @Inject('AuthService') private readonly authService: IAuthService,
+
     private readonly configService: ConfigService,
   ) {}
   async execute(
@@ -60,6 +63,8 @@ export class VerifyResetPasswordCodeUseCase {
     if (emailConfirmation.expiresAt < new Date()) {
       throw new BadRequestException('Code expired');
     }
-    return this.userRepository.changePassword(user.id!, password);
+    const hashed = await this.authService.hash(password);
+
+    return this.userRepository.changePassword(user.id!, hashed);
   }
 }

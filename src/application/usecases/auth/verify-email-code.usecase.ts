@@ -32,6 +32,7 @@ export class VerifyEmailCodeUseCase {
       code,
       EmailCodeType.VERIFY_EMAIL,
     );
+
     if (!emailConfirmation || code !== emailConfirmation.code) {
       throw new BadRequestException('Invalid code');
     }
