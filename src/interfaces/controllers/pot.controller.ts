@@ -1,4 +1,83 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+
+import {
+  CreatePotUseCase,
+  DeletePotUseCase,
+  EditPotUseCase,
+} from 'src/application/usecases/pot';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { AuthenticatedRequest } from '../common/types/auth.type';
+import { PotEntity } from 'src/domain/entities/pot.entity';
+import { CreatePotDto, EditPotDto } from '../dto/pot.dto';
 
 @Controller('pot')
-export class PotController {}
+export class PotController {
+  constructor(
+    private readonly createPotUseCase: CreatePotUseCase,
+    private readonly deletePotUseCase: DeletePotUseCase,
+    private readonly editPotUseCase: EditPotUseCase,
+  ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post('create')
+  async createPot(
+    @Request() req: AuthenticatedRequest,
+    @Body() dto: CreatePotDto,
+  ): Promise<PotEntity> {
+    return this.createPotUseCase.execute(
+      new PotEntity(
+        null,
+        req.user.id!,
+        dto.name,
+        dto.temperature,
+        dto.humidity,
+        dto.soilMoisture,
+        dto.photoresistor,
+        dto.waterSensor,
+        dto.vitaminSensor,
+        dto.PHValue,
+      ),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('edit/:id')
+  async editPot(
+    @Request() req: AuthenticatedRequest,
+    @Body() dto: EditPotDto,
+    @Param('id') potId: number,
+  ): Promise<PotEntity> {
+    return this.editPotUseCase.execute(
+      req.user.id!,
+      potId,
+      new PotEntity(
+        null,
+        req.user.id!,
+        dto.name,
+        dto.temperature,
+        dto.humidity,
+        dto.soilMoisture,
+        dto.photoresistor,
+        dto.waterSensor,
+        dto.vitaminSensor,
+        dto.PHValue,
+      ),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('delete/:id')
+  async deletePot(
+    @Request() req: AuthenticatedRequest,
+    @Param('id') potId: number,
+  ): Promise<number | null> {
+    return this.deletePotUseCase.execute(req.user.id!, potId);
+  }
+}

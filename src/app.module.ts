@@ -9,6 +9,8 @@ import { JwtStrategy } from './infrastructure/auth/jwt.strategy';
 import { JwtAuthGuard } from './interfaces/common/guards/jwt-auth.guard';
 import authUseCases from './application/usecases/auth';
 import userUseCase from './application/usecases/user';
+import potUseCases from './application/usecases/pot';
+
 import { UserRepositoryImpl } from './infrastructure/repositories/user.repository.impl';
 import { AuthServiceImpl } from './application/services/auth.service.impl';
 import { EmailSenderServiceImpl } from './application/services/email-sender.service.impl';
@@ -16,6 +18,7 @@ import { EmailConfirmationRepositoryImpl } from './infrastructure/repositories/e
 import { ScheduleModule } from '@nestjs/schedule';
 import { UserCleanupScheduler } from './interfaces/schedulers/user-cleanup.sceduler';
 import { UserProfileRepositoryImpl } from './infrastructure/repositories/user-profile.repository.impl';
+import { PotRepositoryImpl } from './infrastructure/repositories/pot.repository.impl';
 
 @Module({
   imports: [
@@ -47,9 +50,14 @@ import { UserProfileRepositoryImpl } from './infrastructure/repositories/user-pr
     // Use cases
     ...authUseCases,
     ...userUseCase,
+    ...potUseCases,
     {
       provide: 'UserRepository',
       useClass: UserRepositoryImpl,
+    },
+    {
+      provide: 'PotRepository',
+      useClass: PotRepositoryImpl,
     },
     {
       provide: 'UserProfileRepository',

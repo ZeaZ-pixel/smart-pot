@@ -3,4 +3,8 @@ import { CleanupUnverifiedUsersUseCase } from './cleanup-unverified-users.usecas
 import { EditProfileUseCase } from './edit-profile.usecase';
 
 export { GetMeUseCase, CleanupUnverifiedUsersUseCase, EditProfileUseCase };
-export default [GetMeUseCase, CleanupUnverifiedUsersUseCase, EditProfileUseCase];
+export default [
+  GetMeUseCase,
+  CleanupUnverifiedUsersUseCase,
+  EditProfileUseCase,
+];
