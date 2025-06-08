@@ -8,16 +8,22 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe());
-  ConfigModule.forRoot({
+  void ConfigModule.forRoot({
     isGlobal: true,
-    load: [() => ({
-      resetPassword: {
-        code: {
-          expiresInSeconds: parseInt(process.env.RESET_PASSWORD_CODE_EXPIRES_IN_SECONDS || '600'),
-          maxAttempts: parseInt(process.env.RESET_PASSWORD_MAX_ATTEMPTS || '5')
-        }
-      }
-    })]
+    load: [
+      () => ({
+        resetPassword: {
+          code: {
+            expiresInSeconds: parseInt(
+              process.env.RESET_PASSWORD_CODE_EXPIRES_IN_SECONDS || '600',
+            ),
+            maxAttempts: parseInt(
+              process.env.RESET_PASSWORD_MAX_ATTEMPTS || '5',
+            ),
+          },
+        },
+      }),
+    ],
   });
   const config = new DocumentBuilder()
     .setTitle('API документация')

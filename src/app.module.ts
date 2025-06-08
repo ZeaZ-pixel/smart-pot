@@ -19,6 +19,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { UserCleanupScheduler } from './interfaces/schedulers/user-cleanup.sceduler';
 import { UserProfileRepositoryImpl } from './infrastructure/repositories/user-profile.repository.impl';
 import { PotRepositoryImpl } from './infrastructure/repositories/pot.repository.impl';
+import { PotController } from './interfaces/controllers/pot.controller';
 
 @Module({
   imports: [
@@ -42,7 +43,7 @@ import { PotRepositoryImpl } from './infrastructure/repositories/pot.repository.
       }),
     }),
   ],
-  controllers: [AuthController, UserController],
+  controllers: [AuthController, UserController, PotController],
   providers: [
     JwtStrategy,
     JwtAuthGuard,
