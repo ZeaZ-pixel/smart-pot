@@ -21,6 +21,7 @@ import { UserProfileRepositoryImpl } from './infrastructure/repositories/user-pr
 import { PotRepositoryImpl } from './infrastructure/repositories/pot.repository.impl';
 import { PotController } from './interfaces/controllers/pot.controller';
 import { PotPrivateController } from './interfaces/controllers/pot.private.controller';
+import { PotCommandRepositoryImpl } from './infrastructure/repositories/pot-command.repository.impl';
 
 @Module({
   imports: [
@@ -79,6 +80,10 @@ import { PotPrivateController } from './interfaces/controllers/pot.private.contr
     {
       provide: 'PotRepository',
       useClass: PotRepositoryImpl,
+    },
+    {
+      provide: 'PotCommandsRepository',
+      useClass: PotCommandRepositoryImpl,
     },
     {
       provide: 'UserProfileRepository',
