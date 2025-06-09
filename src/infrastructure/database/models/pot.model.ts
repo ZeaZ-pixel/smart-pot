@@ -32,6 +32,9 @@ export class PotModel {
   @Column({ type: 'float', nullable: true })
   humidity: number;
 
+  @Column({ name: 'image_base_64', type: 'text', nullable: true })
+  imageBase64: string;
+
   @Column({ name: 'soil_moisture', type: 'float', nullable: true })
   soilMoisture: number;
 
