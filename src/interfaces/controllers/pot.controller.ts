@@ -77,7 +77,7 @@ export class PotController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('delete/:id')
+  @Delete(':id')
   async deletePot(
     @Request() req: AuthenticatedRequest,
     @Param('id') potId: number,
