@@ -11,13 +11,16 @@ export class EditPotUseCase {
   async execute(
     userId: number,
     potId: number,
-    potData: PotEntity,
+    imageBase64: string,
   ): Promise<PotEntity> {
     const pot = await this.potRepo.findById(potId);
     if (!pot || pot.userId !== userId) {
       throw new BadRequestException('Pot not found');
     }
-    Object.assign(pot, potData);
-    return await this.potRepo.save(pot);
+    const updatedPot = await this.potRepo.setImage(potId, imageBase64);
+    if (!updatedPot) {
+      throw new BadRequestException('Failed to update pot image');
+    }
+    return updatedPot;
   }
 }

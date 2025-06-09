@@ -41,6 +41,42 @@ export class CreatePotDto {
   PHValue: number;
 }
 
+export class ConnectPotDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+}
+
+export class CreatePotCommandDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  potId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  type: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  payload: string;
+}
+
+export class EditPotImageDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  imageBase64: string;
+}
+
 export class EditPotDto {
   @ApiProperty()
   @IsNumber()

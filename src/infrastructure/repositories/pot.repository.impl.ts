@@ -9,6 +9,54 @@ export class PotRepositoryImpl implements IPotRepository {
     @InjectRepository(PotModel)
     private readonly repo: Repository<PotModel>,
   ) {}
+  async findByUserId(userId: number): Promise<PotEntity | null> {
+    const pot = await this.repo.findOne({
+      where: { userId },
+    });
+    return pot ? this.toDomain(pot) : null;
+  }
+  async setImage(
+    potId: number,
+    imageBase64: string,
+  ): Promise<PotEntity | null> {
+    const pot = await this.repo.findOne({
+      where: { id: potId },
+    });
+    if (!pot) {
+      return null;
+    }
+    pot.imageBase64 = imageBase64;
+    await this.repo.save(pot);
+    return this.toDomain(pot);
+  }
+  async unassignUser(potId: number): Promise<PotEntity | null> {
+    const pot = await this.repo.findOne({
+      where: { id: potId },
+    });
+    if (!pot) {
+      return null;
+    }
+    pot.userId = null;
+    await this.repo.save(pot);
+    return this.toDomain(pot);
+  }
+  async findByName(name: string): Promise<PotEntity | null> {
+    const pot = await this.repo.findOne({
+      where: { name },
+    });
+    return pot ? this.toDomain(pot) : null;
+  }
+  async assignUser(potId: number, userId: number): Promise<PotEntity | null> {
+    const pot = await this.repo.findOne({
+      where: { id: potId },
+    });
+    if (!pot) {
+      return null;
+    }
+    pot.userId = userId;
+    await this.repo.save(pot);
+    return this.toDomain(pot);
+  }
   async update(pot: PotEntity): Promise<PotEntity | null> {
     const potData = this.repo.create(this.toPersistence(pot));
     await this.repo.save(potData);
@@ -63,6 +111,7 @@ export class PotRepositoryImpl implements IPotRepository {
       model.id,
       model.userId,
       model.name,
+      model.password,
       model.temperature,
       model.humidity,
       model.soilMoisture,

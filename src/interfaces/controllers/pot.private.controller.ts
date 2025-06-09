@@ -33,6 +33,7 @@ export class PotPrivateController {
         pot.id,
         pot.userId,
         pot.name,
+        pot.password,
         body.temperature,
         body.humidity,
         body.soilMoisture,

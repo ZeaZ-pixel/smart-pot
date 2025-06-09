@@ -3,6 +3,7 @@ export class PotEntity {
     public readonly id: number | null,
     public userId: number | null,
     public name: string,
+    public password: string,
     public temperature: number,
     public humidity: number,
     public soilMoisture: number,

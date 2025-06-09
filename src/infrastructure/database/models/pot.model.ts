@@ -25,7 +25,7 @@ export class PotModel {
   user: UserModel;
 
   @Column({ name: 'user_id', nullable: true })
-  userId: number;
+  userId: number | null;
 
   @Column({ type: 'float', nullable: true })
   temperature: number;

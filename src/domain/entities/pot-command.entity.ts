@@ -3,7 +3,7 @@ export class PotCommandEntity {
     public readonly id: number | null,
     public potId: number,
     public type: string,
-    public payload: any,
+    public payload: object,
     public isUsed: boolean,
     public executedAt: Date,
     public readonly createdAt: Date = new Date(),
