@@ -5,13 +5,22 @@ import { UpdatePotUseCase } from 'src/application/usecases/pot';
 import { PotEntity } from 'src/domain/entities/pot.entity';
 import { PotRequest } from '../common/types/pot.type';
 import { GetPotCommandsUseCase } from 'src/application/usecases/pot';
+import { UsePotCommandUseCase } from 'src/application/usecases/pot';
+import { Param } from '@nestjs/common';
 
 @Controller('pot/private')
 export class PotPrivateController {
   constructor(
     private readonly updatePotUseCase: UpdatePotUseCase,
     private readonly getPotCommandsUseCase: GetPotCommandsUseCase,
+    private readonly usePotCommandUseCase: UsePotCommandUseCase,
   ) {}
+
+  @UseGuards(PotTokenGuard)
+  @Put('commands/use/:id')
+  async useCommand(@Param('id') potCommandId: number) {
+    return this.usePotCommandUseCase.execute(potCommandId);
+  }
 
   @UseGuards(PotTokenGuard)
   @Put('data')

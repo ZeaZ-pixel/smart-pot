@@ -10,6 +10,15 @@ export class PotCommandRepositoryImpl implements IPotCommandsRepository {
         @InjectRepository(PotCommandModel)
         private readonly repo: Repository<PotCommandModel>,
     ) {}
+    async useCommand(potCommandId: number): Promise<PotCommandEntity | null> {
+        const model = await this.repo.findOneBy({ id: potCommandId });
+        if (!model) {
+            return null;
+        }
+        model.isUsed = true;
+        model.executedAt = new Date();
+        return this.repo.save(model);
+    }
 
     async getActiveAll(potId: number): Promise<PotCommandEntity[]> {
         const models = await this.repo.find({ where: { potId, isUsed: false } });
