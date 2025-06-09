@@ -9,11 +9,26 @@ export class PotRepositoryImpl implements IPotRepository {
     @InjectRepository(PotModel)
     private readonly repo: Repository<PotModel>,
   ) {}
+  async update(pot: PotEntity): Promise<PotEntity | null> {
+    const potData = this.repo.create(this.toPersistence(pot));
+    await this.repo.save(potData);
+    return this.toDomain(potData);
+  }
+
+  async findByAccessToken(token: string): Promise<PotEntity | null> {
+    const pot = await this.repo.findOne({
+      where: { accessToken: token },
+    });
+
+    return pot ? this.toDomain(pot) : null;
+  }
+
   async save(pot: PotEntity): Promise<PotEntity> {
     const ormPot = this.repo.create(this.toPersistence(pot));
     await this.repo.save(ormPot);
     return this.toDomain(ormPot);
   }
+
   async deleteById(potId: number): Promise<number | null> {
     const result = await this.repo.delete({
       id: potId,
@@ -64,10 +79,10 @@ export class PotRepositoryImpl implements IPotRepository {
   private toPersistence(entity: PotEntity): Partial<PotModel> {
     return {
       id: entity.id!,
-      userId: entity.userId,
+      userId: entity.userId ?? undefined,
       name: entity.name,
-      temperature: entity.temperature!,
-      humidity: entity.humidity!,
+      temperature: entity.temperature,
+      humidity: entity.humidity,
       soilMoisture: entity.soilMoisture,
       photoresistor: entity.photoresistor,
       waterSensor: entity.waterSensor,

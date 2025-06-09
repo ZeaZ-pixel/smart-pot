@@ -43,11 +43,6 @@ export class CreatePotDto {
 
 export class EditPotDto {
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
-  @ApiProperty()
   @IsNumber()
   temperature: number;
 
@@ -74,4 +69,7 @@ export class EditPotDto {
   @ApiProperty()
   @IsNumber()
   PHValue: number;
+
+  @ApiProperty()
+  timestamp: Date;
 }

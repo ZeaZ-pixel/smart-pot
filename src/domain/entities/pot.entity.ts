@@ -1,7 +1,7 @@
 export class PotEntity {
   constructor(
     public readonly id: number | null,
-    public userId: number,
+    public userId: number | null,
     public name: string,
     public temperature: number,
     public humidity: number,

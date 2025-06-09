@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Param,
-  Patch,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Delete, Param, Request, UseGuards } from '@nestjs/common';
 
 import {
   CreatePotUseCase,
@@ -16,8 +7,6 @@ import {
 } from 'src/application/usecases/pot';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { AuthenticatedRequest } from '../common/types/auth.type';
-import { PotEntity } from 'src/domain/entities/pot.entity';
-import { CreatePotDto, EditPotDto } from '../dto/pot.dto';
 
 @Controller('pot')
 export class PotController {
@@ -27,52 +16,30 @@ export class PotController {
     private readonly editPotUseCase: EditPotUseCase,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Post('create')
-  async createPot(
-    @Request() req: AuthenticatedRequest,
-    @Body() dto: CreatePotDto,
-  ): Promise<PotEntity> {
-    return this.createPotUseCase.execute(
-      new PotEntity(
-        null,
-        req.user.id!,
-        dto.name,
-        dto.temperature,
-        dto.humidity,
-        dto.soilMoisture,
-        dto.photoresistor,
-        dto.waterSensor,
-        dto.vitaminSensor,
-        dto.PHValue,
-      ),
-    );
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Patch('edit/:id')
-  async editPot(
-    @Request() req: AuthenticatedRequest,
-    @Body() dto: EditPotDto,
-    @Param('id') potId: number,
-  ): Promise<PotEntity> {
-    return this.editPotUseCase.execute(
-      req.user.id!,
-      potId,
-      new PotEntity(
-        null,
-        req.user.id!,
-        dto.name,
-        dto.temperature,
-        dto.humidity,
-        dto.soilMoisture,
-        dto.photoresistor,
-        dto.waterSensor,
-        dto.vitaminSensor,
-        dto.PHValue,
-      ),
-    );
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Patch('edit/:id')
+  // async editPot(
+  //   @Request() req: AuthenticatedRequest,
+  //   @Body() dto: EditPotDto,
+  //   @Param('id') potId: number,
+  // ): Promise<PotEntity> {
+  //   return this.editPotUseCase.execute(
+  //     req.user.id!,
+  //     potId,
+  //     new PotEntity(
+  //       null,
+  //       req.user.id,
+  //       dto.name,
+  //       dto.temperature,
+  //       dto.humidity,
+  //       dto.soilMoisture,
+  //       dto.photoresistor,
+  //       dto.waterSensor,
+  //       dto.vitaminSensor,
+  //       dto.PHValue,
+  //     ),
+  //   );
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')

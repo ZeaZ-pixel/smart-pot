@@ -20,6 +20,7 @@ import { UserCleanupScheduler } from './interfaces/schedulers/user-cleanup.scedu
 import { UserProfileRepositoryImpl } from './infrastructure/repositories/user-profile.repository.impl';
 import { PotRepositoryImpl } from './infrastructure/repositories/pot.repository.impl';
 import { PotController } from './interfaces/controllers/pot.controller';
+import { PotPrivateController } from './interfaces/controllers/pot.private.controller';
 
 @Module({
   imports: [
@@ -57,7 +58,12 @@ import { PotController } from './interfaces/controllers/pot.controller';
       }),
     }),
   ],
-  controllers: [AuthController, UserController, PotController],
+  controllers: [
+    AuthController,
+    UserController,
+    PotController,
+    PotPrivateController,
+  ],
   providers: [
     JwtStrategy,
     JwtAuthGuard,
