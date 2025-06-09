@@ -18,12 +18,13 @@ export class PotModel {
   name: string;
 
   @ManyToOne(() => UserModel, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
+    nullable: true,
   })
   @JoinColumn({ name: 'user_id' })
   user: UserModel;
 
-  @Column({ name: 'user_id' })
+  @Column({ name: 'user_id', nullable: true })
   userId: number;
 
   @Column({ type: 'float', nullable: true })
@@ -52,6 +53,9 @@ export class PotModel {
 
   @Column({ type: 'timestamp' })
   timestamp: Date;
+
+  @Column({ name: 'access_token', type: 'varchar', length: 255, unique: true })
+  accessToken: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
