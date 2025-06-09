@@ -33,6 +33,15 @@ export class PotModel {
   @Column({ type: 'float', nullable: true })
   humidity: number;
 
+  @Column({
+    name: 'password',
+    type: 'varchar',
+    length: 255,
+    default: 'plant123',
+    nullable: true,
+  })
+  password: string;
+
   @Column({ name: 'image_base_64', type: 'text', nullable: true })
   imageBase64: string;
 
@@ -51,7 +60,7 @@ export class PotModel {
   @Column({ name: 'ph_value', type: 'float', nullable: true })
   PHValue: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', nullable: true })
   timestamp: Date;
 
   @Column({ name: 'access_token', type: 'varchar', length: 255, unique: true })

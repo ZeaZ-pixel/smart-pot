@@ -2,5 +2,11 @@ import { UserModel } from './user.model';
 import { PotModel } from './pot.model';
 import { EmailConfirmationModel } from './email-confirmations.model';
 import { UserProfileModel } from './user-profile.model';
-
-export default [UserModel, PotModel, EmailConfirmationModel, UserProfileModel];
+import { PotCommandModel } from './pot_command.model';
+export default [
+  UserModel,
+  PotModel,
+  EmailConfirmationModel,
+  UserProfileModel,
+  PotCommandModel,
+];
