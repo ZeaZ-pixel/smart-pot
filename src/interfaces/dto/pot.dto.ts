@@ -56,11 +56,6 @@ export class ConnectPotDto {
 export class CreatePotCommandDto {
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  potId: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   type: string;
 

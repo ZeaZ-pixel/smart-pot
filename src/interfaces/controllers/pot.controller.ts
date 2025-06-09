@@ -48,14 +48,15 @@ export class PotController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('command')
+  @Post('/:potId/command')
   createCommand(
+    @Param('potId') potId: number,
     @Request() req: AuthenticatedRequest,
     @Body() dto: CreatePotCommandDto,
   ): Promise<PotCommandEntity> {
     return this.createPotCommandUseCase.execute(
       req.user.id!,
-      dto.potId,
+      potId,
       dto.type,
       dto.payload,
     );
