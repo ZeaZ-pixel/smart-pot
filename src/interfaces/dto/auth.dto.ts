@@ -35,6 +35,7 @@ export class EmailCodeVerifyDto {
   @IsEmail()
   email: string;
 
+  @ApiProperty()
   @IsString()
   @MinLength(6)
   @MaxLength(6)

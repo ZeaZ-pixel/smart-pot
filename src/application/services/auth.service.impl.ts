@@ -10,7 +10,7 @@ export class AuthServiceImpl implements IAuthService {
   generateAccessToken(userId: number): string {
     return this.jwt.sign(
       { sub: userId },
-      { expiresIn: '15m', secret: process.env.ACCESS_SECRET },
+      { expiresIn: '2d', secret: process.env.ACCESS_SECRET },
     );
   }
 
